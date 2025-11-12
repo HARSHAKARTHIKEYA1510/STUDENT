@@ -8,7 +8,7 @@ export default function Login() {
   const [pass, setPass] = useState("");
   const [message, setMessage] = useState("");
   const router=useRouter()
-  async function handleClick(e) {
+  async function handleClick(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       const data = await fetch("http://localhost:4000/login", {
@@ -48,16 +48,10 @@ export default function Login() {
             onChange={(e) => setPass(e.target.value)}
             required
           />
-          <button type="submit" onClick={handleClick}>Login</button>
+          <button type="submit">Login</button>
 
           {message && (
-            <p
-              className={`login-message ${
-                message.toLowerCase().includes("success")
-                  ? "success"
-                  : "error"
-              }`}
-            >
+            <p className={`login-message ${message.toLowerCase().includes("success") ? "success" : "error"}`}>
               {message}
             </p>
           )}
