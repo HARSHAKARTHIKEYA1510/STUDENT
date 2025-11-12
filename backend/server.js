@@ -13,20 +13,20 @@ app.post("/login",async (req,res)=>{
     // res.status(200).json({"message":"hii"})
     const {email,password}=req.body
     if (!email || !password){
-        return res.status(400).json({"message":"Fields should not be empty"})
+        return res.status(400).json({success: false,"message":"Fields should not be empty"})
     }
     const existing =await prisma.users.findFirst({
         where:{email}
     })
     if (!existing){
-        return res.status(400).json({"message":"User not exists"})
+        return res.status(400).json({success: false,"message":"User not exists"})
     }
     // const hashedpass=await bcrypt.hash(password,10)
     const IscorrectPass=await bcrypt.compare(password,existing.password)
     if (existing && !IscorrectPass){
-        return res.status(400).json({"message":"Incorrect Password"})
+        return res.status(400).json({success: false,"message":"Incorrect Password"})
     }
-    return res.status(200).json({"message":"Login Succesfull"})
+    return res.status(200).json({success: true,"message":"Login Succesfull"})
 
 })
 app.post("/signup",async(req,res)=>{

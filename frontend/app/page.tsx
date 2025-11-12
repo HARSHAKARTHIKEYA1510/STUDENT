@@ -19,7 +19,9 @@ export default function Login() {
       const res = await data.json();
       setMessage(res.message);
       console.log(res.message);
-      router.push("/dashboard")
+      if (res.success){
+        router.push("/dashboard")
+      }
     } catch (err) {
       console.log(err);
       setMessage("Something went wrong!");
