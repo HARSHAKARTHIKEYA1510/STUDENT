@@ -1,43 +1,75 @@
-"use client"
-import Link from 'next/link'
+"use client";
+import Link from 'next/link';  
 import { useState } from "react";
-// import { json } from "stream/consumers";
+import {useRouter} from "next/navigation"
 
 export default function Login() {
-  const [userEmail,setEmail]=useState("")
-  const [pass,setpass]=useState("")
+  const [userEmail, setEmail] = useState("");
+  const [pass, setPass] = useState("");
   const [message, setMessage] = useState("");
-
-
-async function handleClick() {
-  // e.preventDefault();
-  try {
-    const data = await fetch("http://localhost:4000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail, password: pass }),
-    });
-    const res = await data.json();
-    setMessage(res.message);
-    console.log(res.message);
-  } catch (err) {
-    console.log(err);
+  const router=useRouter()
+  async function handleClick(e) {
+    e.preventDefault();
+    try {
+      const data = await fetch("http://localhost:4000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, password: pass }),
+      });
+      const res = await data.json();
+      setMessage(res.message);
+      console.log(res.message);
+      router.push("/dashboard")
+    } catch (err) {
+      console.log(err);
+      setMessage("Something went wrong!");
+    }
   }
-}
-
+  // function handleLogin(){
+  //   router.push("/dashboard")
+  // }
 
   return (
     <div className="login-container">
-      <div className="left-container">
-        <label>Email</label>
-        <input type="text" onChange={(e)=>setEmail(e.target.value)}/>
-        <label>Password</label>
-        <input type="password" onChange={(e)=>setpass(e.target.value)}/>
-        <button onClick={handleClick}>Login</button>
-        <h1>Hi my name is harsha</h1>
-        <Link href="/signup">create an account</Link>
-        <h1>{message}</h1>
+      <div className="login-card">
+        <h1 className="login-title">Login</h1>
+        <form className="login-form" onSubmit={handleClick}>
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            onChange={(e) => setPass(e.target.value)}
+            required
+          />
+          <button type="submit" onClick={handleClick}>Login</button>
+
+          {message && (
+            <p
+              className={`login-message ${
+                message.toLowerCase().includes("success")
+                  ? "success"
+                  : "error"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+        </form>
+
+        <p className="login-footer">
+          Don’t have an account?{" "}
+          <Link href="/signup" className="signup-link">
+            Create one
+          </Link>
+        </p>
       </div>
     </div>
- );
+  );
 }

@@ -1,38 +1,70 @@
-'use client';
-import Link from 'next/link';  
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+// import "./signup.css";
 
-export default function Signup(){
-    const [useremail,setemail]=useState("")
-    const [UserPass,setpass]=useState("")
-    const [message,setmessage]=useState("")
+export default function Signup() {
+  const [useremail, setEmail] = useState("");
+  const [userPass, setPass] = useState("");
+  const [message, setMessage] = useState("");
 
-    async function handleCreateAcc(e) {
-        e.preventDefault()
-        try{
-        const res=await fetch("http://localhost:4000/signup",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({email:useremail,password:UserPass})
-        })
-        const resMsg=await res.json()
-        console.log(resMsg.message)
-        setmessage(resMsg.message)
-    }catch(err){
-        console.log(err)
+  async function handleCreateAcc(e) {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:4000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: useremail, password: userPass }),
+      });
+      const resMsg = await res.json();
+      setMessage(resMsg.message);
+    } catch (err) {
+      console.log(err);
+      setMessage("Something went wrong!");
     }
-    }
-    return (
-        <div>
-            <div>
-                <h1>Hi</h1>
-                <label>Email</label>
-                <input type="email" onChange={(e)=>setemail(e.target.value)}/>
-                <label>Password</label>
-                <input type="password" onChange={(e)=>setpass(e.target.value)}/>
-                <button onClick={handleCreateAcc}>Create Account</button>
-                <h1>{message}</h1>
-            </div>
-        </div>
-    )
+  }
+
+  return (
+    <div className="signup-container">
+      <div className="signup-card">
+        <h1 className="signup-title">Create an Account</h1>
+        <form onSubmit={handleCreateAcc} className="signup-form">
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={useremail}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={userPass}
+            onChange={(e) => setPass(e.target.value)}
+            required
+          />
+
+          <button type="submit">Create Account</button>
+
+          {message && (
+            <p className={`signup-message ${message.toLowerCase().includes("success")
+                  ? "success"
+                  : "error"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+        </form>
+
+        <p className="signup-footer">
+          Already have an account?{" "}
+          <Link href="/" className="login-link">Login</Link>
+        </p>
+      </div>
+    </div>
+  );
 }
